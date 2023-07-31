@@ -1,95 +1,43 @@
 # Fake News Analysis using Machine Learning
 
 ## Overview
-This project focuses on analyzing news articles to determine if they are real or fake. We use machine learning techniques to build models that can classify news articles into two classes: real news (class 1) and fake news (class 0). The main steps of the analysis include data preprocessing, feature extraction using TF-IDF, and training and evaluating different classifiers.
+This project focuses on analyzing news articles to determine if they are real or fake. I use machine learning techniques to build models that can classify news articles into two classes: real news (class 1) and fake news (class 0). The main steps of the analysis include data preprocessing, feature extraction using TF-IDF, and training and evaluating different classifiers.
 
-## Code Explanation
+## Steps -
+1. Importing Libraries and Datasets
+2. Data Preprocessing
+3. Preprocessing and analysis of the News column
+4. Converting text into Vectors
+5. Model training, Evaluation, and Prediction
 
-1. `data = pd.read_csv('News.csv', index_col=0)`: The code starts by loading the news data from the 'News.csv' file into a pandas DataFrame called `data`.
+# Code Explanation
+### Preprocessing Text Data
+The code first preprocesses the text data to clean and prepare it for analysis. The preprocessing steps include:
 
-2. `data = data.drop(["title", "subject", "date"], axis=1)`: We drop unnecessary columns like 'title', 'subject', and 'date' from the DataFrame as they are not relevant for our analysis.
+- Removing punctuation from the text.
+- Converting the text to lowercase.
+- Tokenizing the text into individual words.
+- Removing stop words (commonly occurring words like "the," "is," "and," etc.).
+- The preprocessed text data is stored back in the DataFrame.
 
-3. `data = data.sample(frac=1)`: To avoid any biases due to the order of data, we shuffle the DataFrame rows using `sample()`.
+### Visualizing Word Frequencies
+The code generates a word cloud visualization to display the most frequently occurring words in both real and fake news articles. Word clouds help visualize the importance of words in the text data, with larger fonts indicating higher word frequencies.
 
-4. `import re, nltk`: We import necessary libraries for text preprocessing and tokenization.
+### Building Machine Learning Models
+The code splits the preprocessed text data into training and testing sets. Two machine learning models are used for classification:
 
-5. `nltk.download('punkt')` and `nltk.download('stopwords')`: We download the NLTK data for tokenization and stop words.
+Logistic Regression: A linear model commonly used for binary classification tasks.
+Decision Tree Classifier: A non-linear model that partitions the feature space to make predictions.
+Both models are trained on the training data and then evaluated on the testing data using accuracy scores.
 
-6. `from nltk.corpus import stopwords`: We import the NLTK stop words corpus for removing common stop words from the text.
+### Evaluating Model Performance
+The code computes accuracy scores for both models to evaluate their performance on the training and testing data. Accuracy is a metric that measures the percentage of correct predictions.
 
-7. `from nltk.tokenize import word_tokenize`: We import the `word_tokenize` function for tokenizing sentences into words.
+Additionally, for the Decision Tree Classifier, a confusion matrix is generated to gain insights into its classification performance for each class (real and fake) in the test data.
 
-8. `from nltk.stem.porter import PorterStemmer`: We import the `PorterStemmer` class for word stemming.
+## Conclusion
+The code demonstrates a text classification approach for fake news analysis. It preprocesses the text data, visualizes word frequencies, and builds machine learning models to predict whether a news article is real or fake. The models' performance is evaluated using accuracy scores, and insights into classification performance are gained using a confusion matrix.
 
-9. `from wordcloud import WordCloud`: We import the `WordCloud` class for creating word cloud visualizations.
-
-10. Preprocessing:
-    - `preprocess_text(text_data)`: We define a function `preprocess_text` to clean the text data by removing punctuation, converting to lowercase, tokenizing, and removing stop words.
-
-    - `preprocessed_review = preprocess_text(data['text'].values)`: We preprocess the 'text' column of the DataFrame `data` and store the cleaned text in a new list called `preprocessed_review`.
-
-    - `data['text'] = preprocessed_review`: We replace the original 'text' column in the DataFrame `data` with the preprocessed text.
-
-11. Word Cloud Visualization:
-    - `consolidated = ' '.join(word for word in data['text'][data['class'] == 1].astype(str))`: We join all the text data labeled as class 1 (real news) into a single string called `consolidated`.
-
-    - `wordCloud = WordCloud(width=1600, height=800, random_state=21, max_font_size=110, collocations=False)`: We initialize a `WordCloud` object for visualization.
-
-    - `plt.imshow(wordCloud.generate(consolidated), interpolation='bilinear')`: We generate and display the word cloud for real news.
-
-12. Machine Learning:
-    - `from sklearn.model_selection import train_test_split`: We import the `train_test_split` function for splitting data into training and testing sets.
-
-    - `from sklearn.metrics import accuracy_score`: We import `accuracy_score` to evaluate the model's performance.
-
-    - `from sklearn.linear_model import LogisticRegression`: We import `LogisticRegression` for one of the classification models.
-
-    - `x_train, x_test, y_train, y_test = train_test_split(data['text'], data['class'], test_size=0.25)`: We split the data into training and testing sets.
-
-    - `from sklearn.feature_extraction.text import TfidfVectorizer`: We import `TfidfVectorizer` for text feature extraction.
-
-    - `vectorization = TfidfVectorizer()`: We initialize a `TfidfVectorizer` object for TF-IDF vectorization.
-
-    - `x_train = vectorization.fit_transform(x_train)`: We fit and transform the training data using the TF-IDF vectorizer.
-
-    - `x_test = vectorization.transform(x_test)`: We transform the testing data using the same vectorizer.
-
-    - Model Training and Evaluation:
-        - Logistic Regression:
-            - `model = LogisticRegression()`: We initialize a logistic regression model.
-
-            - `model.fit(x_train, y_train)`: We train the logistic regression model on the training data.
-
-            - `accuracy_score(y_train, model.predict(x_train))`: We compute the accuracy of the model on the training data.
-
-            - `accuracy_score(y_test, model.predict(x_test))`: We compute the accuracy of the model on the testing data.
-
-        - Decision Tree Classifier:
-            - `from sklearn.tree import DecisionTreeClassifier`: We import `DecisionTreeClassifier` for another classification model.
-
-            - `model = DecisionTreeClassifier()`: We initialize a decision tree classifier model.
-
-            - `model.fit(x_train, y_train)`: We train the decision tree classifier model on the training data.
-
-            - `accuracy_score(y_train, model.predict(x_train))`: We compute the accuracy of the model on the training data.
-
-            - `accuracy_score(y_test, model.predict(x_test))`: We compute the accuracy of the model on the testing data.
-
-        - Confusion Matrix:
-            - `from sklearn import metrics`: We import `metrics` for calculating the confusion matrix.
-
-            - `cm = metrics.confusion_matrix(y_test, model.predict(x_test))`: We compute the confusion matrix for the decision tree classifier.
-
-            - `cm_display.plot()`: We plot the confusion matrix using `ConfusionMatrixDisplay`.
-
-13. Conclusion:
-    - The code demonstrates the process of text preprocessing, feature extraction using TF-IDF, and training and evaluating two classification models (Logistic Regression and Decision Tree Classifier) for fake news analysis.
-
-    - The word cloud visualizations provide insights into the most frequently occurring words in real news and fake news.
-
-    - The accuracy scores help in assessing the performance of the models on both the training and testing data.
-
-    - The confusion matrix provides information about the model's classification performance for fake news and real news.
 
 ## Requirements
 - pandas
